@@ -27,7 +27,7 @@
           </form>
         </div>
         <div><p><?php echo sanitize($row["price"]); ?>$</p></div>
-        <div style="clear:both"><br/></div>
+        <div style="clear:both;"><br/></div>
     <?php endif; ?>
 <?php endforeach; ?>
 

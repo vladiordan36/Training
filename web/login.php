@@ -6,14 +6,9 @@ unset($_SESSION['admin']);
 
 
 function auth() {
-    if(isset($_POST['user']))
-        $user = $_POST['user'];
-    else
-        $user = "";
-    if(isset($_POST['pass']))
-        $pass = $_POST['pass'];
-    else
-        $pass = "";
+    $user = $_POST['user'];
+    $pass = $_POST['pass'];
+
     if(strcmp($user,USER)==0 && strcmp($pass,PASS)==0){
         $_SESSION['admin'] = "y";
         header("Location:admin.php");

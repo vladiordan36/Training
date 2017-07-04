@@ -1,17 +1,17 @@
 <?php require_once("common.php"); ?>
 
 
-<?php if(!isset($_GET['title'])) :?>
+<?php if(!isset($_GET['title'])): ?>
     <p>List an Item</p>
     <form action="product.php" method="GET">
         <input type="text" name="title" placeholder = <?php echo translate('title'); ?> required/>
         <input type="text" name="description" placeholder = <?php echo translate('desc'); ?> required/>
         <input type="number" min="0" name="price" placeholder = <?php echo translate('price'); ?> required/>
         <input type="file" name="image" placeholder = <?php echo translate('url'); ?> required/>
-        <input type ="submit" value=<?php echo translate("listprod");?> />
+        <input type ="submit" value=<?php echo translate("listprod"); ?> />
     </form>
 
-<?php else:?>
+<?php else: ?>
 <?
     $title = sanitize($_GET['title']);
     $description = sanitize($_GET['description']);
@@ -20,7 +20,8 @@
 
     if(isset($_SESSION['update'])){
         echo "Updating ";
-         if(!($stmt = $link->prepare("update products p set p.title = (?), p.description = (?), p.price = (?), p.image = (?) where p.id = (?)"))){
+
+        if(!($stmt = $link->prepare("update products p set p.title = (?), p.description = (?), p.price = (?), p.image = (?) where p.id = (?)"))){
             echo "Update Prepare error ".$link->error;
         }
         if(!($stmt->bind_param('ssdsd',$title,$description,$price,$image,$_SESSION['update']))){
@@ -37,6 +38,7 @@
             echo "Bind error " . $link->error;
         }
     }
+
     if (!($stmt->execute())) {
         echo "Execute error " . $link->error;
     }

@@ -73,6 +73,7 @@ $translate = [
     "desc" => "Description",
     "price" => "Price",
     "url" => "Image URL",
+    "empty" => "Your cart is empty."
 
 ];
 function translate($text){
