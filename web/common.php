@@ -17,20 +17,29 @@ function getProducts(){
     return mysqli_query($link, "select * from products");
 
 }
+function getProduct($id){
+    $res = getProducts();
+    foreach($res as $row){
+        if($row['ID'] == $id){
+            return $row;
+        }
+    }
+
+}
 
 function checkout($mail){
     global $result;
-    $msg = "Your Order:<br />";
+    $msg = "Your Order:<br /><br />";
     $total = 0;
     foreach($result as $row) {
         if(isset($_SESSION['cart'][$row['ID']])){
             if ($_SESSION['cart'][$row['ID']] > 0) {
-                $msg = $msg . $_SESSION['cart'][$row['ID']] . 'x' . $row['title'] . ' : ' . $_SESSION['cart'][$row['ID']] * $row['price'] . '$<br />';
+                $msg = $msg . $_SESSION['cart'][$row['ID']] . ' x ' . $row['title'] . ' : ' . $_SESSION['cart'][$row['ID']] * $row['price'] . '$<br />';
                 $total = $total + $_SESSION['cart'][$row['ID']] * $row['price'];
             }
         }
     }
-    $msg = $msg.'Total: '.$total.'$';
+    $msg = $msg.'<br />Total: '.$total.'$';
     mail($mail,"Order",$msg);
     $_SESSION['cart'] = array();
     echo $msg;
@@ -73,7 +82,10 @@ $translate = [
     "desc" => "Description",
     "price" => "Price",
     "url" => "Image URL",
-    "empty" => "Your cart is empty."
+    "empty" => "Your cart is empty.",
+    "delete" => "Delete",
+    "update" => "Update",
+    "save" => "Save"
 
 ];
 function translate($text){

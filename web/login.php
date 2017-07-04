@@ -25,7 +25,7 @@ else {
     <br />
     <form action='login.php' method='POST'>
     <input type='text' placeholder=<?php echo translate("user"); ?> name='user' required autofocus/>
-    </label><input type='password' placeholder=<?php echo translate("pass"); ?> name='pass' required/>
+    <input type='password' placeholder=<?php echo translate("pass"); ?> name='pass' required/>
     <input type='submit' name='submit' value=<? echo translate("login") ?> />
     </form>
 <?php

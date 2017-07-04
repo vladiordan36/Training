@@ -1,6 +1,7 @@
 <?php
 require_once("common.php");
 $result = getProducts();
+unset($_SESSION['update']);
 ?>
 
 <?php if(isset($_SESSION['admin'])): ?>
@@ -8,35 +9,23 @@ $result = getProducts();
 
 
     <?php foreach($result as $row) : ?>
+
         <div style="float:left;"><img style="height:15%;" src=<?php echo sanitize($row["image"]); ?> /></div>
         <div><p><?php echo sanitize($row["title"]); ?></p></div>
         <div><p><?php echo sanitize($row["description"]); ?></p></div>
-
-        <div style="float:left;">
-            <form method="GET" action = admin.php>
-                <input type="text" name=<?php echo sanitize($row['ID']); ?> placeholder="Enter Delete or Update" />
-                <input  type = "submit" >
-            </form>
+        <div><p><?php echo sanitize($row["price"])."$"; ?></p></div>
+        <div>
+            <a href="delete.php?id=<?php echo $row['ID']; ?>"><?php echo translate('delete'); ?></a>
+        </div>
+        <div>
+            <a href="product.php?update=<?php echo $row['ID']; ?>"><?php echo translate('update'); ?></a>
         </div>
         <div style="clear:both;"><br /></div>
 
-        <?php if(isset($_GET[$row['ID']])): ?>
-            <?php if(strcmp(strtolower($_GET[$row['ID']]),"delete")==0):?>
-                <? $option = "delete from products where id=".$row['ID'].";"; ?>
-                <?php if(!mysqli_query($link,$option)): ?>
-                    <? echo mysqli_error(($link)); ?>
-                <?php endif; ?>
-            <?php endif; ?>
 
-            <?php if(strcmp(strtolower($_GET[$row['ID']]),"update") == 0): ?>
-                     <?php $_SESSION['update'] = $row['ID'];
-                        header("Location:product.php"); ?>
-            <?php endif; ?>
-        <?php endif; ?>
     <?php endforeach; ?>
 
-
-    <div style="float: left;">
+    <div>
         <a href="index.php"><?php echo translate('logout'); ?></a>
     </div>
     <div>

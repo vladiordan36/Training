@@ -33,10 +33,10 @@
 
 
 <br/>
-<div style="float: left;">
+<div>
     <a href="login.php"><?php echo translate('log'); ?></a>
 </div>
-<div style="float: left;">
+<div>
     <a href="cart.php"><?php echo translate('cart'); ?></a>
 </div>
 

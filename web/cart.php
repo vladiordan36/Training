@@ -1,6 +1,7 @@
 <?php require_once('common.php'); ?>
 
-<?php $result = getProducts();
+<?php
+$result = getProducts();
 foreach($result as $row) {
     if (isset($_GET[$row['ID']])) {
         $_SESSION['cart'][$row['ID']] = $_GET[$row['ID']];
@@ -8,7 +9,8 @@ foreach($result as $row) {
 }
 ?>
 
-<?php if(isset($_GET['mail'])){
+<?php
+if(isset($_GET['mail'])){
     checkout($_GET['mail']);
 }
 ?>
@@ -36,7 +38,7 @@ foreach($result as $row) {
     <br/>
 
 <?php else: ?>
-    <div style="float: left;">
+    <div>
         <form>
             <input name="mail" placeholder=<?php echo translate("email"); ?> />
             <input type="submit" value=<?php echo translate('chkout'); ?> />
@@ -44,6 +46,6 @@ foreach($result as $row) {
     </div>
 <?php endif; ?>
 
-<div style="float: left;">
+<div>
     <a href="index.php"><?php echo translate('back'); ?></a>
 </div>
