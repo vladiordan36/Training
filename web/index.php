@@ -1,29 +1,43 @@
+<?php require_once('common.php'); ?>
+<h3><?php echo translate('welcomeuser'); ?></h3><br />
+
 <?php
-require_once('common.php');
+    $result = getProducts();
+    foreach ($result as $row) {
+        if (isset($_GET[$row['ID']])) {
+            if(isset($_SESSION['cart'][$row['ID']])){
+                $_SESSION['cart'][$row['ID']] += $_GET[$row['ID']];
+            }
+            else{
+                $_SESSION['cart'][$row['ID']] = $_GET[$row['ID']];
+            }
+        }
+    }
+?>
 
-$_SESSION['admin'] = "nope";
+<?php foreach ($result as $row): ?>
+    <?php if (!isset($_SESSION['cart'][$row['ID']]) || !$_SESSION['cart'][$row['ID']]): ?>
+        <div style="float: left;"><img src="<?php echo sanitize($row["image"]); ?>" style="height: 15%;" /></div>
+        <div><p><?php echo sanitize($row["title"]); ?></p></div>
+        <div><p><?php echo sanitize($row["description"]); ?></p></div>
+        <div style="margin-left: 10%;">
+          <form method="GET" action="index.php">
+              <input type="number" min="0"  placeholder="Quantity" name="<?php echo sanitize($row['ID']); ?>" required />
+              <input type="submit" Value="<?php echo translate('add'); ?>" />
+          </form>
+        </div>
+        <div><p><?php echo sanitize($row["price"]); ?>$</p></div>
+        <div style="clear:both"><br/></div>
+    <?php endif; ?>
+<?php endforeach; ?>
 
-foreach($result as $row){
-    echo '<div style="float:left"><img src="'.$row["image"].'" style="height:15%"></img></div>
-          <div><p>'.$row['ID'].'.'.$row["title"].'</p></div>
-          <div><p>'.$row["desc"].'</p></div>
-          <div style = "margin-left:10%">
-             <form method="POST" action = "index.php">
-                <input type = "text" placeholder="Quantity" name='.$row['ID'].' required>
-                <input  type = "submit" Value="Add to cart">
-             </form>
-          </div>
-          <div><p>'.$row["price"].'$</p></div>
-          <div style="clear:both"><br/></div>';
-}
-foreach($result as $row)
-    if(isset($_POST[$row['ID']]))
-        $cart[$row['ID']-1] += $_POST[$row['ID']];
 
-$_SESSION['cart'] = $cart;
+<br/>
+<div style="float: left;">
+    <a href="login.php"><?php echo translate('log'); ?></a>
+</div>
+<div style="float: left;">
+    <a href="cart.php"><?php echo translate('cart'); ?></a>
+</div>
 
-echo '<br/>
-<div style="float:left"><form method="POST" action = "login.php"><input  type = "submit" Value="Login"></form></div>
-<div><form method="POST" action = "cart.php"><input  type = "submit" Value="Cart"></form></div>';
 
-mysqli_close($link);

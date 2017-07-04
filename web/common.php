@@ -4,7 +4,6 @@ session_start();
 require_once('config.php');
 
 $link = mysqli_connect(DBSERVER, DBUSER, DBPASS, DBNAME);
-$result = mysqli_query($link, "select * from products");
 
 if (!$link) {
     echo "Connection failed" . PHP_EOL . "<br />";
@@ -13,52 +12,71 @@ if (!$link) {
     exit;
 }
 
-$cart = array();
-$mail = "";
+function getProducts(){
+    global $link;
+    return mysqli_query($link, "select * from products");
 
-function getCart(){
-    global $cart;
-    $cart=array();
-    if(isset($_SESSION['cart']))
-        for($i =0;$i<count($_SESSION['cart']);$i++){
-            array_push($cart,$_SESSION['cart'][$i]);
-        }
-    else
-        $cart = arrayInit();
-}
-
-function arrayInit(){
-    $carts=array();
-    global $result;
-    foreach($result as $line){
-        array_push($carts,0);
-    }
-    return $carts;
 }
 
 function checkout($mail){
-    global $result,$cart;
+    global $result;
     $msg = "Your Order:<br />";
     $total = 0;
-    foreach($result as $row){
-        if($cart[$row['ID']-1] > 0) {
-            $msg = $msg.$cart[$row['ID']-1].'x'.$row['title'].' : '.$cart[$row['ID']-1]*$row['price'].'<br />';
-            $total = $total + $cart[$row['ID']-1]*$row['price'];
+    foreach($result as $row) {
+        if(isset($_SESSION['cart'][$row['ID']])){
+            if ($_SESSION['cart'][$row['ID']] > 0) {
+                $msg = $msg . $_SESSION['cart'][$row['ID']] . 'x' . $row['title'] . ' : ' . $_SESSION['cart'][$row['ID']] * $row['price'] . '$<br />';
+                $total = $total + $_SESSION['cart'][$row['ID']] * $row['price'];
+            }
         }
     }
-    $msg = $msg.'Total: '.$total;
+    $msg = $msg.'Total: '.$total.'$';
     mail($mail,"Order",$msg);
-    $cart = arrayInit();
-    $_SESSION['cart']=$cart;
+    $_SESSION['cart'] = array();
     echo $msg;
 }
 
-function emptyCart(){
-    global $cart;
-    for($I=0;$I<count($cart);$I++)
-        if($cart[$I]!=0)
-            return 0;
-    return 1;
+
+function cartIsEmpty() {
+    return array_sum($_SESSION['cart']) == 0;
 }
 
-getCart();
+function sanitize($text){
+    return  htmlentities(strip_tags($text));
+}
+
+if(!isset($_SESSION['cart'])){
+    $_SESSION['cart']=array();
+}
+
+$translate = [
+    "log" => "Login",
+    "cart" => "Cart",
+    "back" => "Back",
+    "chkout" => "Checkout",
+    "listprod" => "List Product",
+    "tryagain" => "Try Again",
+    "mail" => "mail",
+    "email" => "Enter your email",
+    "list" => "List product",
+    "welcomeadmin" => "Welcome Admin",
+    "welcomeuser" => "Welcome User",
+    "notallowed" => "You shall not pass",
+    "logout" => "Logout",
+    "login" => "Login",
+    "add" => "Add to cart",
+    "user" => "Username",
+    "pass" => "Password",
+    "quantity" => "Quantity",
+    "save" => "Save",
+    "title" => "Title",
+    "desc" => "Description",
+    "price" => "Price",
+    "url" => "Image URL",
+
+];
+function translate($text){
+    global $translate;
+    return isset($translate[$text]) ? $translate[$text] : $text;
+};
+

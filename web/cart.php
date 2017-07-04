@@ -1,42 +1,48 @@
-<?php
-require_once('common.php');
+<?php require_once('common.php');?>
 
-$_SESSION['admin'] = "nope";
+<?php $result = getProducts();
 foreach($result as $row)
-    if(isset($_POST[$row['ID']]))
-        $cart[$row['ID']-1] -= $_POST[$row['ID']];
-$_SESSION['cart'] = $cart;
+    if(isset($_GET[$row['ID']]))
+        $_SESSION['cart'][$row['ID']] = $_GET[$row['ID']];
+?>
 
-if(isset($_POST['mail']))
-    checkout($_POST['mail']);
+<?php if(isset($_GET['mail']))
+    checkout($_GET['mail']);
+?>
 
-foreach($result as $row){
-    if($cart[$row['ID']-1] > 0){
-        echo '<div style="float:left"><img src="'.$row["image"].'" style="height:15%"></img></div>
-              <div><p>'.$row['ID'].'.'.$row["title"].'</p></div>
-              <div><p>'.$row["desc"].'</p></div>
-              
-              <div style = "margin-left:10%">
-                 <form method="POST" action = "cart.php">
-                    <input type = "text" placeholder="Quantity" name='.$row['ID'].' value="'.$cart[$row['ID']-1].'" required>
-                    <input  type = "submit" Value="Remove from cart">
-                 </form>
-              </div>
-              
-              <div><p>'.$row["price"].'$ * '.$cart[$row['ID']-1].'pc. = '.$row["price"]*$cart[$row['ID']-1].'$</p></div>
-              <div style="clear:both"><br/></div>';
-    }
-}
+<?php foreach($result as $row):?>
+    <?php if(isset($_SESSION['cart'][$row['ID']])):?>
+        <?php if($_SESSION['cart'][$row['ID']] > 0):?>
+            <div style="float:left"><img src="<?php echo sanitize($row["image"]);?>" style="height:15%" /></div>
+            <div><p><?php echo sanitize($row["title"])?></p></div>
+            <div><p><?php echo sanitize($row["description"])?></p></div>
 
-mysqli_close($link);
+             <div style = "margin-left:10%">
+             <form method="GET" action = "cart.php">
+                <input type = "text" placeholder=<?php echo translate('quantity'); ?> name=<?php echo sanitize($row['ID'])?> value=<?php echo $_SESSION['cart'][$row['ID']]?> required>
+                <input  type = "submit" value=<?php echo translate('save'); ?>>
+             </form>
+            </div>
 
+            <div><p>Cost: <?php echo $_SESSION['cart'][$row['ID']]." x ".$row['price']."$ = ".$_SESSION['cart'][$row['ID']]*$row['price']."$";?></p></div>
+            <div style="clear:both"><br /></div>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
 
+<?php if(cartIsEmpty()):?>
+    <p>"Your cart is empty."</p>
+    <br/>
 
-echo '<br />
-<div style="float:left"><form method="POST" action = "index.php"><input  type = "submit" Value="<--Back"></form></div>';
-if(!emptyCart()){
-    echo '<div><form method="POST" action = cart.php>
-            <input  type = "submit" Value="Checkout-->">
-            <input  type = "text" name="mail" placeholder="Enter eMail">
-        </form></div>';
-}
+<?php else: ?>
+    <div style="float: left;">
+        <form>
+            <input name=<?php echo translate('mail'); ?> placeholder=<?php echo translate("email"); ?> />
+            <input type="submit" value=<?php echo translate('chkout'); ?> />
+        </form>
+    </div>
+<?php endif; ?>
+
+<div style="float: left;">
+    <a href="index.php"><?php echo translate('back'); ?></a>
+</div>
