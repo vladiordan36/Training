@@ -1,11 +1,9 @@
 <?php
 require_once("common.php");
 $result = getProducts();
-unset($_SESSION['update']);
 ?>
-
 <?php if(isset($_SESSION['admin'])): ?>
-    <h3><?php echo translate("welcomeadmin"); ?></h3><br />
+    <h3><?php echo translate("welcomeadmin"); ?></h3>
 
 
     <?php foreach($result as $row) : ?>

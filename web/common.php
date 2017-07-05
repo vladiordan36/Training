@@ -84,8 +84,10 @@ $translate = [
     "url" => "Image URL",
     "empty" => "Your cart is empty.",
     "delete" => "Delete",
-    "update" => "Update",
-    "save" => "Save"
+    "update" => "Edit",
+    "save" => "Save",
+    "invalid file" => "File is invalid! The image will be set by default.",
+    "cpyerr" => "Copy error! The image will be set by default."
 
 ];
 function translate($text){
@@ -93,3 +95,19 @@ function translate($text){
     return isset($translate[$text]) ? $translate[$text] : $text;
 };
 
+function validateFile($file){
+    $ext = pathinfo($file,PATHINFO_EXTENSION);
+    if(file_exists($file) || $_FILES['image']['size'] > 5000000 || ($ext != "jpg" && $ext != "png" && $ext != "jpeg" && $ext != "gif" ) || $_FILES['image']['error'] > 0){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+function getSumId(){
+    global $link;
+    $max_result = mysqli_query($link,"select sum(id) as value_sum from products;");
+    $max_row = mysqli_fetch_assoc($max_result);
+    $max = $max_row['value_sum'];
+    return $max;
+}
