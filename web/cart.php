@@ -23,8 +23,8 @@ if(isset($_GET['mail'])){
 
          <div style = "margin-left:10%;">
          <form method="GET" action = "cart.php">
-            <input type = "text" placeholder=<?php echo translate('quantity'); ?> name=<?php echo sanitize($row['ID']) ?> value=<?php echo $_SESSION['cart'][$row['ID']] ?> required>
-            <input  type = "submit" value=<?php echo translate('save'); ?>>
+            <input type = "text" placeholder="<?php echo translate('quantity'); ?>" name="<?php echo sanitize($row['ID']) ?>" value="<?php echo $_SESSION['cart'][$row['ID']] ?>" required="required" />
+            <input  type = "submit" value="<?php echo translate('save'); ?>" />
          </form>
         </div>
 
@@ -40,8 +40,8 @@ if(isset($_GET['mail'])){
 <?php else: ?>
     <div>
         <form>
-            <input name="mail" placeholder=<?php echo translate("email"); ?> />
-            <input type="submit" value=<?php echo translate('chkout'); ?> />
+            <input name="mail" placeholder="<?php echo translate("email"); ?>" />
+            <input type="submit" value="<?php echo translate('chkout'); ?>" />
         </form>
     </div>
 <?php endif; ?>

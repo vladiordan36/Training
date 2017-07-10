@@ -27,14 +27,12 @@ $result = getProducts();
         <a href="index.php"><?php echo translate('logout'); ?></a>
     </div>
     <div>
-        <a href="product.php"><?php echo translate('list'); ?></a>
+        <a href="product.php"><?php echo translate('new'); ?></a>
     </div>
 
 <?php else: ?>
         <h3><?php echo translate("notallowed"); ?></h3><br />
         <div style="float:left;">
-            <form method="GET" action = index.php>
-                <input  type = "submit" value=<?php echo translate("logout"); ?>>
-            </form>
+            <a href="index.php"><?php echo translate('back'); ?></a>
         </div>
 <?php endif; ?>

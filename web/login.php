@@ -1,7 +1,6 @@
 <?php
 require_once('common.php');
 
-unset($_SESSION['cart']);
 unset($_SESSION['admin']);
 
 
@@ -18,15 +17,16 @@ function auth() {
     }
 }
 
-if(isset($_POST['user']))
+if(isset($_POST['user'])){
     auth();
+}
 else {
 ?>
     <br />
-    <form action='login.php' method='POST'>
-    <input type='text' placeholder=<?php echo translate("user"); ?> name='user' required autofocus/>
-    <input type='password' placeholder=<?php echo translate("pass"); ?> name='pass' required/>
-    <input type='submit' name='submit' value=<? echo translate("login") ?> />
+    <form action="login.php" method="POST">
+    <input type="text" placeholder="<?php echo translate("user"); ?>" name="user" required="required" autofocus/>
+    <input type="password" placeholder="<?php echo translate("pass"); ?>" name="pass" required="required"/>
+    <input type="submit" name="submit" value="<? echo translate("login") ?>" />
     </form>
 <?php
 }

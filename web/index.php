@@ -22,8 +22,8 @@
         <div><p><?php echo sanitize($row["description"]); ?></p></div>
         <div style="margin-left: 10%;">
           <form method="GET" action="index.php">
-              <input type="number" min="0"  placeholder="Quantity" name="<?php echo sanitize($row['ID']); ?>" required />
-              <input type="submit" Value="<?php echo translate('add'); ?>" />
+              <input type="number" min="0"  placeholder="Quantity" name="<?php echo sanitize($row['ID']); ?>" required="required" />
+              <input type="submit" value="<?php echo translate('add'); ?>" />
           </form>
         </div>
         <div><p><?php echo sanitize($row["price"]); ?>$</p></div>

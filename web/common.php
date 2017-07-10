@@ -18,18 +18,24 @@ function getProducts(){
 
 }
 function getProduct($id){
-    $res = getProducts();
-    foreach($res as $row){
-        if($row['ID'] == $id){
-            return $row;
+    global $link;
+    $id = sanitize($id);
+
+    $stmt = $link->prepare("select * from products where id=(?)");
+    $stmt->bind_param('d',$id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while($res = $result->fetch_assoc()){
+        if($res['ID'] == $id){
+            return $res;
         }
     }
-
 }
 
 function checkout($mail){
     global $result;
-    $msg = "Your Order:<br /><br />";
+    $msg = translate("order")."<br /><br />";
     $total = 0;
     foreach($result as $row) {
         if(isset($_SESSION['cart'][$row['ID']])){
@@ -67,7 +73,7 @@ $translate = [
     "tryagain" => "Try Again",
     "mail" => "mail",
     "email" => "Enter your email",
-    "list" => "List product",
+    "new" => "Add product",
     "welcomeadmin" => "Welcome Admin",
     "welcomeuser" => "Welcome User",
     "notallowed" => "You shall not pass",
@@ -86,8 +92,9 @@ $translate = [
     "delete" => "Delete",
     "update" => "Edit",
     "save" => "Save",
-    "invalid file" => "File is invalid! The image will be set by default.",
-    "cpyerr" => "Copy error! The image will be set by default."
+    "invalid file" => "File is invalid! Try again with a different file.",
+    "cpyerr" => "Upload error! Try again.",
+    "order" => "Your order: "
 
 ];
 function translate($text){
@@ -96,18 +103,17 @@ function translate($text){
 };
 
 function validateFile($file){
-    $ext = pathinfo($file,PATHINFO_EXTENSION);
-    if(file_exists($file) || $_FILES['image']['size'] > 5000000 || ($ext != "jpg" && $ext != "png" && $ext != "jpeg" && $ext != "gif" ) || $_FILES['image']['error'] > 0){
-        return false;
+    if(file_exists($file) || $_FILES['image']['size'] > 5000000
+        || (($_FILES["image"]["type"] != "image/gif")
+        && ($_FILES["image"]["type"] != "image/jpeg")
+        && ($_FILES["image"]["type"] != "image/jpg")
+        && ($_FILES["image"]["type"] != "image/png"))
+        || $_FILES['image']['error'] > 0){
+            echo $_FILES['image']['type'];
+            return false;
     }
     else{
         return true;
     }
 }
-function getSumId(){
-    global $link;
-    $max_result = mysqli_query($link,"select sum(id) as value_sum from products;");
-    $max_row = mysqli_fetch_assoc($max_result);
-    $max = $max_row['value_sum'];
-    return $max;
-}
+
