@@ -11,7 +11,7 @@ foreach($result as $row) {
 
 <?php
 if(isset($_GET['mail'])){
-    checkout($_GET['mail']);
+    checkout($_GET['mail'], $result);
 }
 ?>
 

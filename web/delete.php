@@ -4,7 +4,7 @@ if(isset($_SESSION['admin'])){
     if(isset($_GET['id'])){
         $stmt = "";
         $id = sanitize($_GET['id']);
-        if(!($stmt = $link->prepare("delete from products where id=(?)"))){
+        if(!($stmt = $link->prepare("delete from products where ID=(?)"))){
             echo "Update Prepare error ".$link->error;
         }
         if(!($stmt->bind_param('d',$id))){

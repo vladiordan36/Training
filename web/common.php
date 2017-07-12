@@ -3,7 +3,7 @@ session_start();
 
 require_once('config.php');
 
-$link = mysqli_connect(DBSERVER, DBUSER, DBPASS, DBNAME);
+$link = mysqli_connect(DBSERVER,DBUSER, DBPASS, DBNAME);
 
 if (!$link) {
     echo "Connection failed" . PHP_EOL . "<br />";
@@ -21,20 +21,15 @@ function getProduct($id){
     global $link;
     $id = sanitize($id);
 
-    $stmt = $link->prepare("select * from products where id=(?)");
+    $stmt = $link->prepare("select * from products where ID=(?)");
     $stmt->bind_param('d',$id);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    while($res = $result->fetch_assoc()){
-        if($res['ID'] == $id){
-            return $res;
-        }
-    }
+    return $result->fetch_assoc();
 }
 
-function checkout($mail){
-    global $result;
+function checkout($mail,$result){
     $msg = translate("order")."<br /><br />";
     $total = 0;
     foreach($result as $row) {
@@ -45,8 +40,9 @@ function checkout($mail){
             }
         }
     }
-    $msg = $msg.'<br />Total: '.$total.'$';
-    mail($mail,"Order",$msg);
+    $msg = $msg.' <br /> Total: '.$total.'$';
+    $msg = sanitize($msg);
+    mail($mail,"Order",$msg,"From: shop1@local.com");
     $_SESSION['cart'] = array();
     echo $msg;
 }
@@ -104,10 +100,7 @@ function translate($text){
 
 function validateFile($file){
     if(file_exists($file) || $_FILES['image']['size'] > 5000000
-        || (($_FILES["image"]["type"] != "image/gif")
-        && ($_FILES["image"]["type"] != "image/jpeg")
-        && ($_FILES["image"]["type"] != "image/jpg")
-        && ($_FILES["image"]["type"] != "image/png"))
+        || !preg_match('/image\/.*/', $_FILES["image"]["type"])
         || $_FILES['image']['error'] > 0){
             echo $_FILES['image']['type'];
             return false;
